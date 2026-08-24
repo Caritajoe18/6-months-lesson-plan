@@ -1,83 +1,136 @@
-function add(a, b) {
+const transactions = [
+  { id: 1, product: "Laptop", amount: 1200, status: "completed", date: "2025-01-15" },
+  { id: 2, product: "Phone", amount: 800, status: "completed", date: "2025-01-16" },
+  { id: 3, product: "Tablet", amount: 500, status: "refunded", date: "2025-01-17" },
+  { id: 4, product: "Monitor", amount: 350, status: "completed", date: "2025-01-18" },
+  { id: 5, product: "Keyboard", amount: 120, status: "pending", date: "2025-01-19" },
+  { id: 6, product: "Mouse", amount: 80, status: "completed", date: "2025-01-20" },
+  { id: 7, product: "Headphones", amount: 250, status: "completed", date: "2025-01-21" },
+  { id: 8, product: "Webcam", amount: 180, status: "refunded", date: "2025-01-22" }
+];
 
-    return a + b;
+// Basic Pipeline
 
+function getCompletedTransactions(transactions) {
+  return transactions.filter(transaction => {
+    return transaction.status === "completed";
+  });
+}
+
+function getCompletedProductNames(transactions) {
+  return getCompletedTransactions(transactions).map(transaction => {
+    return transaction.product;
+  });
+}
+
+function getTotalRevenue(transactions) {
+  return getCompletedTransactions(transactions).reduce((total, transaction) => {
+    return total + transaction.amount;
+  }, 0);
 }
 
 
-function subtract(a, b) {
 
-    if (typeof a !== "number" || typeof b !== "number") {
-        return "Error: Both arguments must be numbers.";
+function getStatusSummary(transactions) {
+  return transactions.reduce((summary, transaction) => {
+    const status = transaction.status;
+
+    if (!summary[status]) {
+      summary[status] = 0;
     }
 
-    return a - b;
+    summary[status]++;
 
+    return summary;
+  }, {});
 }
 
+function getAverageAmount(transactions) {
+  if (transactions.length === 0) {
+    return 0;
+  }
 
-function multiply(a, b) {
+  const total = transactions.reduce((sum, transaction) => {
+    return sum + transaction.amount;
+  }, 0);
 
-    return a * b;
-
+  return total / transactions.length;
 }
 
+function getMostExpensive(transactions) {
+  const completed = getCompletedTransactions(transactions);
 
-function divides(a, b) {
+  if (completed.length === 0) {
+    return null;
+  }
 
-    return a / b;
+  return completed.reduce((highest, transaction) => {
+    if (transaction.amount > highest.amount) {
+      return transaction;
+    }
 
+    return highest;
+  });
 }
 
-const divide = (a, b)=>{
+// Bonus
 
+function groupByMonth(transactions) {
+  return transactions.reduce((months, transaction) => {
+    const month = transaction.date.slice(0, 7);
+
+    if (!months[month]) {
+      months[month] = [];
+    }
+
+    months[month].push(transaction);
+
+    return months;
+  }, {});
 }
 
+function generateReport(transactions) {
+  const completedTransactions = getCompletedTransactions(transactions);
 
+  return {
+    totalTransactions: transactions.length,
+    completedCount: completedTransactions.length,
+    totalRevenue: getTotalRevenue(transactions),
+    averageAmount: getAverageAmount(transactions),
+    highestSale: getMostExpensive(transactions),
 
-// console.log("Addition:", add(20, 10));
+    lowestSale: transactions.reduce((lowest, transaction) => {
+      if (transaction.amount < lowest.amount) {
+        return transaction;
+      }
 
- //console.log("Subtraction:", subtract(3, 10));
-
-// console.log("Multiplication:", multiply(20, 10));
-
-// console.log("Division:", divide(20, 10));
-
-
-
-
-const name = "ada, yes";
-
-
-const life = 'Iamliving';
-
-const fruits = ["Banana", "Orange", "Apple", "Mango"];
-let fruit = fruits.shift();
-
-// console.log("fruit", fruit)
-// console.log ("updated fruit", fruits)
-
-const cars = ['BMW', 'Volvo', 'Mini'];
-
-// Iterate over the Array values
-let text = "";
-for (let x in cars) {
-   text += cars[x] + "b";
+      return lowest;
+    })
+  };
 }
 
-console.log("text", text)
+// Testing the functions
 
+console.log("Completed Transactions:");
+console.log(getCompletedTransactions(transactions));
 
+console.log("\nCompleted Product Names:");
+console.log(getCompletedProductNames(transactions));
 
-  // does not include the end
+console.log("\nTotal Revenue:");
+console.log(getTotalRevenue(transactions));
 
+console.log("\nStatus Summary:");
+console.log(getStatusSummary(transactions));
 
+console.log("\nAverage Transaction Amount:");
+console.log(getAverageAmount(transactions));
 
-// const work2 = `${life} ${name}` // template literals
+console.log("\nMost Expensive Completed Transaction:");
+console.log(getMostExpensive(transactions));
 
+console.log("\nTransactions Grouped By Month:");
+console.log(groupByMonth(transactions));
 
-// const work = "ada, yes" + ' I am living' // template literals
-
-
-// console.log("my work:", work )
-
+console.log("\nFull Report:");
+console.log(generateReport(transactions));
