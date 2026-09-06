@@ -1,20 +1,15 @@
-import readline from "readline";
+const mains = () => {
+    let a = 10
+    let b = 40
+    if (a = b) {
+        console.log("a is equal to b");
 
-const input = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+        console.log(a)
+    } else {
+        console.log("a is not equal to b");
+    }
 
+    return 0
+}
 
-export const ask = (question) => {
-  return new Promise((resolve) => {
-    input.question(question, (answer) => {
-      resolve(answer);
-    });
-  });
-};
-
-
-export const closeInput = () => {
-  input.close();
-};
+mains();
