@@ -16,6 +16,8 @@ By the end of this lesson, you will be able to:
 
 ---
 
+Note : we will be collaborating real time
+
 ## 1. What Is GitHub?
 
 ```text
