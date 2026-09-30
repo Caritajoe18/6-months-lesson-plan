@@ -3,3 +3,5 @@ solutions/
 todo/
 presentation/
 Screenshot 2026-09-20 at 4.22.46 PM.png
+.env
+node_modules/
