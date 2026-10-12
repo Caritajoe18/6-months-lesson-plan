@@ -442,7 +442,7 @@ CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(100) NOT NULL,
-  password_hash VARCHAR(255) NOT NOT NULL, -- note: fix typo in mind, write correctly
+  password_hash VARCHAR(255) NOT NULL,
   role VARCHAR(20) NOT NULL CHECK (role IN ('admin','user')),
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

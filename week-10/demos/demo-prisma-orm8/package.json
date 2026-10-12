@@ -1,0 +1,27 @@
+{
+  "name": "demo-prisma-orm8",
+  "version": "1.0.0",
+  "description": "Demo: Prisma ORM 8 against PostgreSQL — contract, emit, migrations, CRUD, relations, filtering, pagination, aggregates, transactions, raw SQL",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "emit": "prisma contract emit",
+    "plan": "prisma migration plan --name demo",
+    "migrate": "prisma db migrate --advance-ref db",
+    "db:init": "prisma db init",
+    "seed": "tsx src/prisma/seed.ts",
+    "demo": "tsx src/demo.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/orm-postgres": "8.0.0-rc.17",
+    "dotenv": "^16.4.5",
+    "temporal-polyfill": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prisma": "8.0.0-rc.22",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

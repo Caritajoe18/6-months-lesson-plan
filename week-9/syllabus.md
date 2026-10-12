@@ -10,10 +10,13 @@ This week bridges the Task Manager API built in Week 8 with **real relational pe
 - Familiarity with TypeScript, Express routing, controllers & stores
 - `psql` / `pgAdmin` or `psql` CLI
 
+> ⚠️ **New to PostgreSQL?** Complete the [Installation Guide](installation.md) first — it covers macOS/Windows/Linux, verification, GUI clients, and connecting from Node.
+
 ## Files
 
 | File | Topic | Type |
 |------|-------|------|
+| [Installation Guide](installation.md) | **Start here** — install PostgreSQL, `psql`, GUI client, connect from Node | Setup |
 | [Day 1](day-1-relational-sql-select-where-join-groupby.md) | Relational concepts, tables/keys, `SELECT/WHERE/JOIN/GROUP BY` | Theory + hands-on |
 | [Day 2](day-2-advanced-sql-ctes-indexes-transactions-acid.md) | Subqueries, CTEs, `EXPLAIN`, indexes, transactions, ACID | Theory + hands-on |
 | [Day 3](day-3-node-pg-connection-pooling-parameterized.md) | `pg` driver, `Pool`, parameterized queries (`$1,$2`), safe DB access | Hands-on |
