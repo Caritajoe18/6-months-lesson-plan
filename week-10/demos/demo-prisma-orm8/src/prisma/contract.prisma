@@ -1,0 +1,57 @@
+// use prisma-8
+
+enum Role {
+  @@type("pg/text@1")
+  ADMIN
+  USER
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  displayName  String   @map("display_name")
+  passwordHash String   @map("password_hash")
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    temporal.updatedAt()     @map("updated_at")
+
+  posts Post[]
+
+  @@map("users")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  published Boolean  @default(false)
+  authorId  Int      @map("author_id")
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tags     Tag[]
+  postTags PostTag[]
+
+  @@index([authorId])
+  @@map("posts")
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  label String @unique
+
+  posts     Post[]
+  postTags  PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  postId Int
+  tagId  Int
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("post_tags")
+}
