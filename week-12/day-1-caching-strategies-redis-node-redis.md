@@ -38,6 +38,71 @@ The application writes to the database and updates the cache as part of the same
 
 The application writes to a cache first and persists later. This can improve write throughput, but losing or delaying writes can lose business data. Do not use it for ordinary application records without a carefully designed durable queue and recovery plan.
 
+
+
+
+Caching strategies dictate **how and when data moves between your application, your database, and your cache** (like Redis). Choosing the right strategy affects how fast your app runs, how fresh your data is, and what happens if your system crashes.
+
+
+Deeper, practical breakdown of the **three main caching strategies** using a real-world example: an **online shopping app** where users view and update product details.
+
+---
+
+### 1. Cache-Aside (Lazy Loading)
+
+*This is the strategy you felt comfortable with—and it is the most common default for read-heavy apps.*
+
+* **How it works:**
+1. When a user requests a product (`GET /products/42`), the application **checks the cache first**.
+2. **If it’s a Cache Hit:** The cache returns the data instantly.
+3. **If it’s a Cache Miss:** The app queries the **database**, gets the product, **saves a copy into the cache** for future requests, and then returns it to the user.
+4. **On a Write/Update:** When the product details change, the application updates the database and then **invalidates (deletes)** that key from the cache so the next read fetches fresh data.
+
+
+* **Why use it:** It is efficient. **Only data that is actually requested gets cached.** If you have 1 million products in your database, but users only look at 500 of them today, Cache-aside only keeps those 500 in memory.
+* **Trade-off:** The very first person to request a newly updated or rarely viewed item will experience a "cache miss" delay because the app has to go to the database first.
+
+---
+
+### 2. Write-Through
+
+*This strategy treats the cache as an active participant in every write operation.*
+
+* **How it works:**
+1. When a user updates a product (e.g., changes the price), the application sends the update to a caching layer or a service.
+2. That layer **simultaneously writes the new data to the database AND updates the cache** in the same general operation.
+3. Subsequent reads always hit the cache and are **guaranteed to be fresh**.
+
+
+* **Why use it:** There is **zero stale data**. Because the cache is updated the exact moment the database is updated, readers never see old information. It is great for applications where users cannot tolerate seeing outdated info even for a few seconds.
+* **Trade-off:** **Wasted memory and slower writes.** Every single write operation updates the cache, even if nobody ever reads that product again. Also, writing to two different places at once introduces complexity—what happens if the database write succeeds, but the cache write fails?
+
+---
+
+### 3. Write-Behind (Write-Back)
+
+*This is the high-performance, high-risk speed demon of caching.*
+
+* **How it works:**
+1. When data is created or updated, the application **writes it *only* to the cache** and immediately tells the user, "Success!"
+2. The cache system quietly, in the background, batches these changes and **writes them to the database asynchronously** a few seconds or minutes later.
+
+
+* **Why use it:** **Blazing fast write performance.** If your app is getting thousands of writes per second (like real-time chat messages, click tracking, or IoT sensor logs), writing straight to a fast in-memory cache and letting it bulk-save to the database later saves massive amounts of database strain.
+* **Trade-off:** **Risk of data loss.** Because the cache acknowledges success before the data safely reaches the permanent database, if Redis crashes or loses power before the background sync happens, **those changes vanish forever**. You should never use write-behind for critical business data (like financial transactions or user accounts) unless you have a bulletproof durable queue backing it up.
+
+---
+
+### Summary Table
+
+| Strategy | When does data get into the cache? | Where do writes go first? | Best used for | Main Risk |
+| --- | --- | --- | --- | --- |
+| **Cache-Aside** | On a read "miss" (lazy) | Database, then delete cache key | Read-heavy product catalogs, user profiles | First reader hits a slow database query |
+| **Write-Through** | Immediately on every write | Database **and** Cache simultaneously | Data that must never be stale | Extra write overhead; unused data fills memory |
+| **Write-Behind** | Immediately on write | Cache first, Database later (background) | High-throughput logs, metrics, counters | Data loss if the cache crashes before syncing |
+
+
+
 For this week, use **cache-aside** and invalidate after successful database writes.
 
 ---
