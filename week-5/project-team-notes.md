@@ -1,3 +1,4 @@
+
 # Project: Collaborative "Team Notes" CLI
 
 ## Objective
@@ -8,7 +9,7 @@ Work in **pairs** to build a shared Node.js CLI tool — the same code in one re
 
 ---
 
-## The Product
+## The Product Manager
 
 A terminal todo/note manager with two feature modules, each built by a different developer:
 
